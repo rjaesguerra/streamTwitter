@@ -19,9 +19,12 @@ var dbStream = [];
 
 // MongoDB configuration
 MongoClient.connect(mongodbURL, function(err, db){
-  if(!err){
+  if(!err) {
     dbStream = db.collection('stream');
     console.log("connected to MongoDB database...");
+  }
+  else{
+    throw err;
   }
 });
 
