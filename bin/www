@@ -3,13 +3,27 @@
 /**
  * Module dependencies.
  */
-
 var app = require('../app');
 var debug = require('debug')('streamTwitter:server');
 var http = require('http');
 var Twitter = require('twitter');
+var MongoClient = require('mongodb').MongoClient;
+
+/**
+ * Program Variables
+ */
 var searchKeyword = "bubblegum";
 var vancouverGeoLocation = '-123.2094,49.1212,-123.02472,49.29305'; // Vancouver and Richmond
+var mongodbURL = "mongodb://localhost:27017/stream"
+var dbStream = [];
+
+// MongoDB configuration
+MongoClient.connect(mongodbURL, function(err, db){
+  if(!err){
+    dbStream = db.collection('stream');
+    console.log("connected to MongoDB database...");
+  }
+});
 
 // Twitter configuration
 if(!process.env.CONSUMER_KEY){
@@ -26,8 +40,7 @@ var client = new Twitter({
 client.stream('statuses/filter', {locations: vancouverGeoLocation}, function(stream) {
   stream.on('data', function(tweet) {
     if(tweet.text.indexOf(searchKeyword) > -1){
-      // TODO: Store to database
-      console.log(tweet.text);
+      dbStream.insert({'tweet':tweet.text});
     }
   });
 
