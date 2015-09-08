@@ -7,6 +7,30 @@
 var app = require('../app');
 var debug = require('debug')('streamTwitter:server');
 var http = require('http');
+var searchKeyword = "bubblegum";
+var vancouverGeoLocation = '-123.2094,49.1212,-123.02472,49.29305'; // Vancouver and Richmond
+
+var Twitter = require('twitter');
+var client = new Twitter({
+  consumer_key: '',
+  consumer_secret: '',
+  access_token_key: '',
+  access_token_secret: ''
+});
+
+// TODO: not working for tweets from mobile
+client.stream('statuses/filter', {locations: vancouverGeoLocation}, function(stream) {
+  stream.on('data', function(tweet) {
+    if(tweet.text.indexOf(searchKeyword) > -1){
+      // TODO: Store to database
+      console.log(tweet.text);
+    }
+  });
+
+  stream.on('error', function(error) {
+    throw error;
+  });
+});
 
 /**
  * Get port from environment and store in Express.
