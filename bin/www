@@ -7,15 +7,19 @@
 var app = require('../app');
 var debug = require('debug')('streamTwitter:server');
 var http = require('http');
+var Twitter = require('twitter');
 var searchKeyword = "bubblegum";
 var vancouverGeoLocation = '-123.2094,49.1212,-123.02472,49.29305'; // Vancouver and Richmond
 
-var Twitter = require('twitter');
+// Twitter configuration
+if(!process.env.CONSUMER_KEY){
+  var clientConfig = require('../clientConfig.js');
+}
 var client = new Twitter({
-  consumer_key: '',
-  consumer_secret: '',
-  access_token_key: '',
-  access_token_secret: ''
+  consumer_key: process.env.CONSUMER_KEY,
+  consumer_secret: process.env.CONSUMER_SECRET,
+  access_token_key: process.env.ACCESS_TOKEN_KEY,
+  access_token_secret: process.env.ACCESS_TOKEN_SECRET
 });
 
 // TODO: not working for tweets from mobile
